@@ -1,0 +1,13 @@
+fastapi>=0.68.0
+uvicorn>=0.15.0
+python-dotenv>=0.19.0
+redis>=4.0.0
+trimesh[all]~=4.2.1
+pydantic~=2.10.6
+boto3~=1.37.38
+numpy~=1.24.4
+requests~=2.32.3
+dramatiq~=1.17.1
+ray~=2.10.0
+python-multipart
+open3d

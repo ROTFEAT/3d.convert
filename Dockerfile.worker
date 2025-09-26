@@ -1,0 +1,47 @@
+FROM wyxsg/freecad-python:1.0.1
+
+WORKDIR /app
+
+# 清理APT缓存和临时文件以节省空间
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /root/.cache/pip/*
+
+# 复制依赖文件
+COPY requirements.txt .
+
+# 安装依赖，添加额外的清理步骤和特定版本控制
+RUN pip install --no-cache-dir pip==24.0 && \
+    pip install --no-cache-dir wheel setuptools && \
+    # 先安装numpy以避免版本冲突
+    pip install --no-cache-dir 'numpy==1.24.4' && \
+    # 分批安装其他依赖以减少内存使用
+    pip install --no-cache-dir \
+        fastapi>=0.68.0 \
+        uvicorn>=0.15.0 \
+        python-dotenv>=0.19.0 \
+        redis>=4.0.0 && \
+    pip install --no-cache-dir \
+        dramatiq~=1.17.1 \
+        pydantic~=2.10.6 \
+        requests~=2.32.3 && \
+    pip install --no-cache-dir \
+        boto3~=1.37.38 \
+        python-multipart \
+        trimesh[all]~=4.2.1 && \
+    pip install --no-cache-dir open3d && \
+    # 清理所有缓存
+    rm -rf /root/.cache/pip/* && \
+    rm -rf /tmp/*
+
+# 复制应用代码
+COPY . .
+
+# 设置环境变量
+ENV PYTHONUNBUFFERED=1
+
+# 创建必要的目录
+RUN mkdir -p input output tmp
+
+# 启动Dramatiq Worker服务，使用python -m执行
+CMD ["python", "-m", "dramatiq", "dr_worker"] 
