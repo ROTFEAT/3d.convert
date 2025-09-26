@@ -1,0 +1,13 @@
+/output
+/input
+/temp
+/__pycache__
+*.gltf
+*.pyc
+*.pyc
+*.igs
+*.bin
+/api/models/__pycache__
+/tmp
+/api/router/__pycache__
+/api/tmp
